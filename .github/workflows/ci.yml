@@ -1,0 +1,188 @@
+name: CI
+
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    name: Lint & Format
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          uv venv
+          uv pip install -e ".[dev]"
+
+      - name: Ruff lint
+        run: uv run ruff check src/ tests/
+
+      - name: Ruff format check
+        run: uv run ruff format --check src/ tests/
+
+      - name: MyPy type check
+        run: uv run mypy src/
+
+      - name: Bandit security scan
+        run: uv run bandit -c pyproject.toml -r src/
+
+  test:
+    name: Test (Python ${{ matrix.python-version }})
+    runs-on: ubuntu-24.04
+    strategy:
+      matrix:
+        python-version: ["3.12"]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Install dependencies
+        run: |
+          uv venv
+          uv pip install -e ".[dev,test]"
+
+      - name: Run tests with coverage
+        run: |
+          uv run pytest --cov=cura_xy_calibration --cov-report=xml --cov-report=term-missing
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          file: ./coverage.xml
+          fail_ci_if_error: false
+
+  packaging:
+    name: Packaging check
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install build tools
+        run: |
+          uv venv
+          uv pip install build wheel
+
+      - name: Build package
+        run: uv run python -m build
+
+      - name: Check package metadata
+        run: uv run python -m twine check dist/*
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: cura-xy-calibration-dist
+          path: dist/
+
+  dependency-review:
+    name: Dependency Review
+    runs-on: ubuntu-24.04
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Dependency Review
+        uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
+
+  security:
+    name: Security Audit
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          uv venv
+          uv pip install -e ".[dev]"
+
+      - name: pip-audit
+        run: uv run pip-audit
+
+      - name: Safety check
+        run: uv run safety check --full-report
+        continue-on-error: true
+
+  smoke-test:
+    name: Smoke Test
+    runs-on: ubuntu-24.04
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install package
+        run: |
+          uv venv
+          uv pip install -e "."
+
+      - name: Smoke test - import
+        run: |
+          uv run python -c "
+          from cura_xy_calibration import Calibration, Point, Mesh, Profile
+          from cura_xy_calibration.interpolation import BilinearInterpolation, BicubicInterpolation
+          print('Core types imported successfully')
+
+          cal = Calibration.for_bed(220, 220, 10, BilinearInterpolation())
+          print(f'Calibration created: {cal.mesh.rows}x{cal.mesh.cols} grid')
+
+          off = cal.offset_at(100, 100)
+          print(f'Offset at (100, 100): {off}')
+
+          print('Smoke test passed!')
+          "

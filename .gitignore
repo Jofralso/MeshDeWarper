@@ -1,0 +1,58 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+*.whl
+
+# Virtual environments
+venv/
+.venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.coverage
+.coverage.*
+htmlcov/
+.pytest_cache/
+*.coverage
+
+# Type checking
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Linting
+.ruff_cache/
+
+# Documentation
+docs/_build/
+docs/api/
+
+# Build artifacts
+*.so
+*.dll
+*.dylib
+
+# Cura plugin bundle
+*.curaplugin
+
+# Coverage reports
+coverage.xml
+*.cover
+
+# Logs
+*.log

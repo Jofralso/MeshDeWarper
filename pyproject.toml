@@ -1,0 +1,172 @@
+[build-system]
+requires = ["setuptools>=69.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "CuraXYCalibration"
+version = "0.1.0"
+description = "Full XY distortion calibration plugin for Ultimaker Cura"
+readme = "README.md"
+requires-python = ">=3.12"
+license = "AGPL-3.0-only"
+authors = [
+    {name = "CuraXYCalibration Contributors"},
+]
+keywords = ["cura", "3d-printing", "calibration", "distortion-correction", "g-code"]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Manufacturing",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Printing",
+]
+
+dependencies = [
+    "numpy>=1.26",
+    "scipy>=1.13",
+    "numpy-stl>=3.0",
+    "reportlab>=4.1",
+    "svgwrite>=1.4",
+    "PyYAML>=6.0",
+    "Pillow>=10.0",
+    "opencv-python-headless>=4.9",
+    "networkx>=3.3",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "pytest-qt>=4.4",
+    "ruff>=0.5.0",
+    "black>=24.4",
+    "mypy>=1.10",
+    "pre-commit>=3.7",
+    "bandit>=1.7",
+    "pip-audit>=2.7",
+    "safety>=3.0",
+    "sphinx>=7.3",
+    "sphinx-rtd-theme>=2.0",
+    "sphinx-autodoc-typehints>=2.0",
+    "types-PyYAML>=6.0",
+    "types-setuptools>=69.0",
+]
+test = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "pytest-asyncio>=0.23",
+]
+qt = [
+    "PyQt5>=5.15",
+]
+docs = [
+    "sphinx>=7.3",
+    "sphinx-rtd-theme>=2.0",
+    "sphinx-autodoc-typehints>=2.0",
+]
+vision = [
+    "opencv-python-headless>=4.9",
+    "scikit-image>=0.23",
+]
+all = [
+    "CuraXYCalibration[dev,test,qt,docs,vision]",
+]
+
+[project.urls]
+Homepage = "https://github.com/cura-xy-calibration/CuraXYCalibration"
+Repository = "https://github.com/cura-xy-calibration/CuraXYCalibration"
+Documentation = "https://cura-xy-calibration.readthedocs.io"
+Issues = "https://github.com/cura-xy-calibration/CuraXYCalibration/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["cura_xy_calibration*"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E", "W",  # pycodestyle
+    "F",        # pyflakes
+    "I",        # isort
+    "N",        # pep8-naming
+    "D",        # pydocstyle
+    "UP",       # pyupgrade
+    "YTT",      # flake8-2020
+    "ANN",      # flake8-annotations
+    "S",        # flake8-bandit
+    "BLE",      # flake8-blind-except
+    "RUF",      # ruff-specific
+]
+ignore = [
+    "D107",  # init docstring
+    "D203",  # 1 blank line before docstring
+    "D213",  # multi-line summary
+    "D401",  # imperative mood
+    "ANN101", # self type annotation
+    "ANN102", # cls type annotation
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.format]
+quote-style = "double"
+
+[tool.black]
+line-length = 100
+target-version = ["py312"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+ignore_missing_imports = true
+disallow_untyped_defs = true
+disallow_any_unimported = false
+warn_return_any = true
+warn_unused_configs = true
+no_implicit_optional = true
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "-v",
+    "--tb=short",
+    "--strict-config",
+    "--strict-markers",
+    "-p", "no:cacheprovider",
+]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "slow: Slow tests",
+    "vision: Computer vision tests",
+    "gcode: G-code tests",
+    "interpolation: Interpolation tests",
+    "ui: UI tests",
+]
+
+[tool.coverage.run]
+source = ["cura_xy_calibration"]
+branch = true
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "def __str__",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "pass",
+]
+
+[tool.bandit]
+exclude_dirs = ["tests", "docs", ".github"]
+skips = ["B101", "B303", "B311"]

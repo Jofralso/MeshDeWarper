@@ -1,0 +1,23 @@
+# Repository code owners
+# Each line is a file pattern followed by usernames or team names.
+
+* @cura-xy-calibration/maintainers
+
+# Core data types and interpolation (critical path)
+/src/cura_xy_calibration/core/ @cura-xy-calibration/core-team
+/src/cura_xy_calibration/interpolation/ @cura-xy-calibration/core-team
+
+# G-code engine (critical path)
+/src/cura_xy_calibration/gcode/ @cura-xy-calibration/gcode-team
+
+# Vision module (experimental)
+/src/cura_xy_calibration/vision/ @cura-xy-calibration/vision-team
+
+# UI components
+/src/cura_xy_calibration/ui/ @cura-xy-calibration/ui-team
+
+# CI/CD pipeline
+/.github/workflows/ @cura-xy-calibration/devops-team
+
+# Documentation
+/docs/ @cura-xy-calibration/docs-team
