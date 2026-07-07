@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable
 from pathlib import Path
-from typing import Any, Optional
+from typing import Any
 
 from cura_xy_calibration.__version__ import __version__
 from cura_xy_calibration.core import Calibration, CalibrationProfile

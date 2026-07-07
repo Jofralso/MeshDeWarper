@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import numpy as np
+
 from cura_xy_calibration.core.mesh import Mesh
 from cura_xy_calibration.core.point import Point
 from cura_xy_calibration.interpolation.bicubic import BicubicInterpolation
@@ -27,15 +29,12 @@ class TestBicubicInterpolation:
         assert isinstance(ox, float)
         assert isinstance(oy, float)
 
-    def test_cubic_convolution(self) -> None:
+    def test_cubic_kernel(self) -> None:
         interp = BicubicInterpolation()
-        result = interp._cubic_convolution(0.0, 1.0, 2.0, 3.0, 0.5)
+        result = interp._cubic(0.0, 1.0, 2.0, 3.0, 0.5)
         assert abs(result - 1.5) < 1e-6  # linear mid
 
-    def test_cubic_interpolate(self) -> None:
-        import numpy as np
-
-        interp = BicubicInterpolation()
+    def test_bicubic_linear_field(self) -> None:
         p = np.array(
             [
                 [0.0, 1.0, 2.0, 3.0],
@@ -44,5 +43,6 @@ class TestBicubicInterpolation:
                 [3.0, 4.0, 5.0, 6.0],
             ]
         )
-        result = interp._cubic_interpolate(p, 0.5, 0.5)
-        assert abs(result - 3.0) < 1e-6  # mid of linear gradients
+        interp = BicubicInterpolation()
+        result = interp._bicubic(p, 0.5, 0.5)
+        assert abs(result - 3.0) < 1e-6  # mid of bilinear field

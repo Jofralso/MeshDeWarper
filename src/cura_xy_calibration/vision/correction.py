@@ -48,7 +48,7 @@ class LensCorrector:
             )
             corrected = cv2.undistort(
                 image, self._camera_matrix, self._dist_coeffs, None, new_camera
-            )  # noqa: E501
+            )
             x, y, w_, h_ = roi
             return corrected[y : y + h_, x : x + w_]
         except ImportError:

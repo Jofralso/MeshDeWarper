@@ -97,10 +97,10 @@ class SvgPatternGenerator(PatternGenerator):
             if config.fiducial == FiducialMarker.CORNER_CROSS:
                 dwg.add(
                     dwg.line((cx - sz, cy - sz), (cx + sz, cy + sz), stroke="black", stroke_width=1)
-                )  # noqa: E501
+                )
                 dwg.add(
                     dwg.line((cx + sz, cy - sz), (cx - sz, cy + sz), stroke="black", stroke_width=1)
-                )  # noqa: E501
+                )
             elif config.fiducial == FiducialMarker.CORNER_CIRCLE:
                 dwg.add(dwg.circle((cx, cy), sz, fill="none", stroke="black"))
             elif config.fiducial == FiducialMarker.CORNER_TARGET:

@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import logging
 from collections.abc import Iterator
-from collections.abc import Iterator
 from dataclasses import dataclass, field
 
 from cura_xy_calibration.core.point import Point

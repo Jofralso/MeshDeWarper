@@ -87,7 +87,7 @@ class StlPatternGenerator(PatternGenerator):
 
         return stl_mesh.Mesh(
             np.zeros(faces.shape[0], dtype=stl_mesh.Mesh.dtype), remove_empty_areas=False
-        )  # noqa: E501
+        )
 
     def _make_feature(self, x: float, y: float, config: PatternConfig) -> stl_mesh.Mesh:
         sz = config.point_size

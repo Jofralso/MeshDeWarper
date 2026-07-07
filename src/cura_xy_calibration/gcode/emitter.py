@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 from pathlib import Path
 
-
 from cura_xy_calibration.gcode.ast import GCodeAst, GCodeCommand
 
 logger = logging.getLogger(__name__)

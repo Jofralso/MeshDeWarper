@@ -16,7 +16,6 @@ keywords = ["cura", "3d-printing", "calibration", "distortion-correction", "g-co
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Manufacturing",
-    "License :: OSI Approved :: GNU Affero General Public License v3",
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering",
     "Topic :: Printing",
@@ -32,13 +31,13 @@ dependencies = [
     "Pillow>=10.0",
     "opencv-python-headless>=4.9",
     "networkx>=3.3",
+    "matplotlib>=3.8",
 ]
 
 [project.optional-dependencies]
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
-    "pytest-qt>=4.4",
     "ruff>=0.5.0",
     "black>=24.4",
     "mypy>=1.10",

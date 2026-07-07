@@ -11,6 +11,8 @@ class MoveType(Enum):
 
     RAPID = auto()
     LINEAR = auto()
+    ARC_CW = auto()
+    ARC_CCW = auto()
     UNKNOWN = auto()
 
 
@@ -40,6 +42,29 @@ class GCodeWord:
         if val == int(val):
             return f"{self.letter}{int(val)}"
         return f"{self.letter}{val:g}"
+
+
+@dataclass(frozen=True)
+class ArcParams:
+    """Parameters for G2/G3 arc moves.
+
+    Attributes:
+        i: X-centre offset from start.
+        j: Y-centre offset from start.
+        r: Radius (alternative to I/J).
+    """
+
+    i: float | None = None
+    j: float | None = None
+    r: float | None = None
+
+    @property
+    def is_center_specified(self) -> bool:
+        return self.i is not None and self.j is not None
+
+    @property
+    def is_radius_specified(self) -> bool:
+        return self.r is not None
 
 
 @dataclass
@@ -88,10 +113,28 @@ class GCodeCommand:
             return MoveType.RAPID
         elif g == 1:
             return MoveType.LINEAR
+        elif g == 2:
+            return MoveType.ARC_CW
+        elif g == 3:
+            return MoveType.ARC_CCW
         return MoveType.UNKNOWN
 
+    @property
+    def arc_params(self) -> ArcParams:
+        i_val: float | None = None
+        j_val: float | None = None
+        r_val: float | None = None
+        for w in self.words:
+            if w.letter == "I":
+                i_val = w.value
+            elif w.letter == "J":
+                j_val = w.value
+            elif w.letter == "R":
+                r_val = w.value
+        return ArcParams(i=i_val, j=j_val, r=r_val)
+
     def is_move(self) -> bool:
-        return self.g_code in (0, 1)
+        return self.g_code in (0, 1, 2, 3)
 
     def has_xy(self) -> bool:
         return any(w.letter == "X" for w in self.words) or any(w.letter == "Y" for w in self.words)

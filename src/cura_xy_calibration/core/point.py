@@ -5,6 +5,7 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 
+
 @dataclass(frozen=True)
 class Point:
     """A 2D point with optional distortion offset.
