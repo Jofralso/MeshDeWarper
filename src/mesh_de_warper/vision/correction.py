@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+from typing import cast
 
 import numpy as np
 
@@ -50,7 +51,7 @@ class LensCorrector:
                 image, self._camera_matrix, self._dist_coeffs, None, new_camera
             )
             x, y, w_, h_ = roi
-            return corrected[y : y + h_, x : x + w_]
+            return cast(np.ndarray, corrected[y : y + h_, x : x + w_])
         except ImportError:  # pragma: no cover
             logger.error("OpenCV not available for lens correction")
             return image
@@ -86,7 +87,7 @@ class PerspectiveCorrector:
 
             matrix = cv2.getPerspectiveTransform(self._src_points, self._dst_points)
             h, w = image.shape[:2]
-            return cv2.warpPerspective(image, matrix, (w, h))
+            return cast(np.ndarray, cv2.warpPerspective(image, matrix, (w, h)))
         except ImportError:  # pragma: no cover
             logger.error("OpenCV not available for perspective correction")
             return image

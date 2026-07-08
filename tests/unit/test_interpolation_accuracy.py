@@ -20,8 +20,6 @@ from mesh_de_warper.interpolation.bilinear import BilinearInterpolation
 from mesh_de_warper.interpolation.rbf import RBFInterpolation
 from mesh_de_warper.interpolation.tps import ThinPlateSplineInterpolation
 
-np.random.seed(42)
-
 # ── Synthetic distortion functions ──────────────────────────────────
 
 
@@ -82,10 +80,11 @@ def build_mesh_from_func(
 
 def rmse(interp: InterpolationAlgorithm, mesh: Mesh, func, n_samples: int = 100) -> float:
     """Root-mean-square error between interpolated and ground-truth offset."""
+    rng = np.random.default_rng(42)
     errors = []
     for _ in range(n_samples):
-        x = np.random.uniform(0, mesh.width)
-        y = np.random.uniform(0, mesh.height)
+        x = rng.uniform(0, mesh.width)
+        y = rng.uniform(0, mesh.height)
         ix, iy = interp.interpolate(mesh, x, y)
         tx, ty = func(x, y)
         errors.append(math.hypot(ix - tx, iy - ty))
