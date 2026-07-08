@@ -29,7 +29,7 @@ jobs:
       - name: Install package with dev deps
         run: |
           python -m pip install --upgrade pip
-          pip install -e ".[dev,test,qt]"
+          pip install -e ".[dev,test,qt,vision]"
 
       - name: Lint (ruff)
         run: ruff check src/ tests/

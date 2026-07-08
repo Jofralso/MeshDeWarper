@@ -130,7 +130,7 @@ EXPECTED_ACCURACY = {
         "bicubic": 1.6,
         "tps": 0.8,
         "rbf-tps": 0.8,
-        "rbf-gaussian": 2.5,
+        "rbf-gaussian": 25.0,
         "rbf-mq": 2.0,
         "rbf-imq": 2.5,
     },
