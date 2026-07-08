@@ -8,7 +8,7 @@ import pytest
 
 from mesh_de_warper.core.calibration import Calibration
 from mesh_de_warper.interpolation.bilinear import BilinearInterpolation
-from mesh_de_warper.plugin import CuraPlugin, get_meta_data, register
+from mesh_de_warper.plugin import CuraPlugin, getMetaData, register
 
 
 class TestCuraPlugin:
@@ -83,14 +83,14 @@ class TestCuraPlugin:
         assert plugin.get_calibration().mesh[0, 0].offset_x == 0.0
 
     def test_register(self) -> None:
-        plugin = register()
-        assert isinstance(plugin, CuraPlugin)
+        result = register(None)
+        assert isinstance(result, dict)
+        assert "extension" in result
+        assert isinstance(result["extension"], CuraPlugin)
 
     def test_get_meta_data(self) -> None:
-        meta = get_meta_data()
-        assert "version" in meta
-        assert "plugin_name" in meta
-        assert meta["plugin_name"] == "XY Distortion Calibration"
+        meta = getMetaData()
+        assert meta == {}
 
     def test_interpolation_from_name(self) -> None:
         plugin = CuraPlugin()

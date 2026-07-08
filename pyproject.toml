@@ -74,8 +74,7 @@ Repository = "https://github.com/Jofralso/MeshDeWarper"
 Documentation = "https://github.com/Jofralso/MeshDeWarper#readme"
 Issues = "https://github.com/Jofralso/MeshDeWarper/issues"
 
-[project.scripts]
-meshdewarper = "mesh_de_warper.plugin:register"
+
 
 [tool.setuptools.packages.find]
 where = ["src"]
@@ -104,8 +103,6 @@ ignore = [
     "D203",  # 1 blank line before docstring
     "D213",  # multi-line summary
     "D401",  # imperative mood
-    "ANN101", # self type annotation
-    "ANN102", # cls type annotation
 ]
 
 [tool.ruff.lint.per-file-ignores]

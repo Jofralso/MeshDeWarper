@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  discussions: write
 
 jobs:
   test:
@@ -29,26 +30,108 @@ jobs:
           python -m pip install --upgrade pip
           pip install -e ".[dev,test,qt,vision]"
 
+      - name: Lint
+        run: ruff check src/ tests/
+
+      - name: Type check
+        run: mypy src/
+
       - name: Test
         run: QT_QPA_PLATFORM=offscreen python -m pytest tests/
 
-  build:
+  release:
     needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
 
       - name: Set up Python 3.12
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
+      - name: Install build tools
+        run: |
+          uv venv
+          uv pip install build wheel
+
+      - name: Build Python package
+        run: uv run python -m build
+
       - name: Build .curaplugin
-        run: python scripts/build_curaplugin.py --version "${GITHUB_REF_NAME#v}"
+        run: uv run python scripts/build_curaplugin.py --version "${GITHUB_REF_NAME#v}"
+
+      - name: Generate changelog
+        id: changelog
+        run: |
+          PREV_TAG=$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || echo "")
+          if [ -z "$PREV_TAG" ]; then
+            CHANGELOG="Initial release"
+          else
+            CHANGELOG=$(git log --oneline --no-decorate $PREV_TAG..HEAD)
+          fi
+          {
+            echo 'changelog<<EOF'
+            echo "$CHANGELOG"
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           name: MeshDeWarper ${{ github.ref_name }}
+          body: |
+            ## MeshDeWarper ${{ github.ref_name }}
+
+            ${{ steps.changelog.outputs.changelog }}
+
+            ### Assets
+            - `.curaplugin` bundle (attached)
+            - Python wheel (attached)
+            - Source code (attached)
+          files: |
+            dist/*.whl
+            dist/*.tar.gz
+            dist/*.curaplugin
           generate_release_notes: true
-          files: dist/*.curaplugin
+          draft: false
+          prerelease: false
+
+  # TODO: Add publish-pypi job when PYPI_API_TOKEN secret is configured
+  # Steps:
+  #   1. Create token at https://pypi.org/manage/account/token/
+  #   2. Add as repo secret: PYPI_API_TOKEN
+  #   3. Uncomment and enable this job
+
+  publish-docs:
+    needs: release
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@v3
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install docs dependencies
+        run: |
+          uv venv
+          uv pip install -e ".[docs]"
+
+      - name: Build documentation
+        run: uv run sphinx-build -b html docs/ docs/_build/html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs/_build/html

@@ -5,7 +5,6 @@ from __future__ import annotations
 import logging
 from collections.abc import Callable
 from pathlib import Path
-from typing import Any
 
 from mesh_de_warper.__version__ import __version__
 from mesh_de_warper.core import Calibration, CalibrationProfile
@@ -19,10 +18,7 @@ PLUGIN_VERSION = __version__
 
 
 class CuraPlugin:
-    """Main plugin class for Ultimaker Cura integration.
-
-    Manages plugin lifecycle, settings, and G-code post-processing.
-    """
+    """Main plugin class for Ultimaker Cura integration."""
 
     def __init__(self) -> None:
         self._calibration: Calibration | None = None
@@ -119,17 +115,13 @@ class CuraPlugin:
 
 
 # Cura extension registration
-def get_meta_data() -> dict[str, Any]:
-    """Return plugin metadata for Cura extension registration."""
-    return {
-        "version": PLUGIN_VERSION,
-        "plugin_name": PLUGIN_NAME,
-        "supported_cura_versions": [">=5.0"],
-    }
+def getMetaData() -> dict[str, object]:  # noqa: N802
+    """Return plugin metadata (empty — all metadata is in plugin.json)."""
+    return {}
 
 
-def register() -> CuraPlugin:
+def register(app: object) -> dict[str, object]:
     """Register the plugin with Cura's extension system."""
     plugin = CuraPlugin()
     logger.info("%s v%s registered", PLUGIN_NAME, PLUGIN_VERSION)
-    return plugin
+    return {"extension": plugin}
