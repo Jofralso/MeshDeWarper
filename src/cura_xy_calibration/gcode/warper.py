@@ -230,9 +230,9 @@ class GCodeWarper:
             if orig_f is not None:
                 words.append(GCodeWord("F", round(orig_f, 2)))
 
-            segments.append(
-                GCodeCommand(words=words, comment=cmd.comment, line_number=cmd.line_number)
-            )
+            seg_cmd = GCodeCommand(words=words, comment=cmd.comment, line_number=cmd.line_number)
+            seg_cmd.raw = str(seg_cmd)
+            segments.append(seg_cmd)
 
         return segments
 
