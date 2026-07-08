@@ -1,0 +1,205 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Release Guide &mdash; MeshDeWarper  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contribution Guide" href="contribution_guide.html" />
+    <link rel="prev" title="Testing Guide" href="testing_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MeshDeWarper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibration_guide.html">Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vision_guide.html">Vision Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_guide.html">Testing Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Release Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#versioning">Versioning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#release-process">Release Process</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#post-release">Post-Release</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#hotfix-releases">Hotfix Releases</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contribution_guide.html">Contribution Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MeshDeWarper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Release Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/release_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="release-guide">
+<h1>Release Guide<a class="headerlink" href="#release-guide" title="Link to this heading"></a></h1>
+<p>This document describes the release process for MeshDeWarper.</p>
+<section id="versioning">
+<h2>Versioning<a class="headerlink" href="#versioning" title="Link to this heading"></a></h2>
+<p>The project follows <a class="reference external" href="https://semver.org/">Semantic Versioning</a>:</p>
+<ul class="simple">
+<li><p><strong>MAJOR</strong> — breaking API changes</p></li>
+<li><p><strong>MINOR</strong> — new features, no breaking changes</p></li>
+<li><p><strong>PATCH</strong> — bug fixes and minor improvements</p></li>
+</ul>
+<p>The current version is <code class="docutils literal notranslate"><span class="pre">0.1.0</span></code> (alpha).</p>
+</section>
+<section id="release-process">
+<h2>Release Process<a class="headerlink" href="#release-process" title="Link to this heading"></a></h2>
+<ol class="arabic">
+<li><p><strong>Update the version</strong></p>
+<p>Edit <code class="docutils literal notranslate"><span class="pre">src/mesh_de_warper/__version__.py</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">__version__</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;0.2.0&quot;</span>
+<span class="n">__version_info__</span><span class="p">:</span> <span class="n">Final</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Also update <code class="docutils literal notranslate"><span class="pre">version</span></code> in <code class="docutils literal notranslate"><span class="pre">setup.cfg</span></code> and <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>.</p>
+</li>
+<li><p><strong>Update the changelog</strong></p>
+<p>Ensure all notable changes are documented. The release drafter
+workflow (<code class="docutils literal notranslate"><span class="pre">.github/release-drafter.yml</span></code>) can help generate
+release notes automatically.</p>
+</li>
+<li><p><strong>Run the full test suite</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pytest<span class="w"> </span>--cov<span class="o">=</span>mesh_de_warper
+ruff<span class="w"> </span>check<span class="w"> </span>src/
+mypy<span class="w"> </span>src/
+</pre></div>
+</div>
+</li>
+<li><p><strong>Create a release commit</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>add<span class="w"> </span>-A
+git<span class="w"> </span>commit<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;Release v0.2.0&quot;</span>
+</pre></div>
+</div>
+</li>
+<li><p><strong>Tag the release</strong></p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v0.2.0<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;v0.2.0&quot;</span>
+git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v0.2.0
+</pre></div>
+</div>
+</li>
+<li><p><strong>CI/CD automation</strong></p>
+<p>Pushing a tag triggers <code class="docutils literal notranslate"><span class="pre">.github/workflows/release.yml</span></code> which:</p>
+<ul class="simple">
+<li><p>Builds the <code class="docutils literal notranslate"><span class="pre">.curaplugin</span></code> package</p></li>
+<li><p>Publishes to PyPI</p></li>
+<li><p>Creates a GitHub Release with release notes</p></li>
+<li><p>Builds and deploys documentation to GitHub Pages</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="post-release">
+<h2>Post-Release<a class="headerlink" href="#post-release" title="Link to this heading"></a></h2>
+<ul>
+<li><p>Verify the PyPI package installs correctly:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span>MeshDeWarper
+</pre></div>
+</div>
+</li>
+<li><p>Verify the documentation is deployed at
+<a class="reference external" href="https://mesh-de-warper.readthedocs.io">https://mesh-de-warper.readthedocs.io</a></p></li>
+<li><p>Monitor for any issues reported on the
+<a class="reference external" href="https://github.com/mesh-de-warper/MeshDeWarper/issues">issue tracker</a>.</p></li>
+</ul>
+</section>
+<section id="hotfix-releases">
+<h2>Hotfix Releases<a class="headerlink" href="#hotfix-releases" title="Link to this heading"></a></h2>
+<p>For critical bug fixes, create a patch release from the same major.minor
+branch:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git<span class="w"> </span>checkout<span class="w"> </span>v0.2.x
+git<span class="w"> </span>cherry-pick<span class="w"> </span>&lt;fix-commit&gt;
+git<span class="w"> </span>tag<span class="w"> </span>-a<span class="w"> </span>v0.2.1<span class="w"> </span>-m<span class="w"> </span><span class="s2">&quot;v0.2.1&quot;</span>
+git<span class="w"> </span>push<span class="w"> </span>origin<span class="w"> </span>v0.2.1
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="testing_guide.html" class="btn btn-neutral float-left" title="Testing Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="contribution_guide.html" class="btn btn-neutral float-right" title="Contribution Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, MeshDeWarper Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

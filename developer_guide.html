@@ -1,0 +1,205 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Developer Guide &mdash; MeshDeWarper  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="API Reference" href="api_reference.html" />
+    <link rel="prev" title="Vision Guide" href="vision_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MeshDeWarper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibration_guide.html">Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="vision_guide.html">Vision Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Developer Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#project-structure">Project Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#core-design-principles">Core Design Principles</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adding-a-new-interpolation-algorithm">Adding a New Interpolation Algorithm</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-quality">Code Quality</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_guide.html">Testing Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_guide.html">Release Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribution_guide.html">Contribution Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MeshDeWarper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Developer Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/developer_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="developer-guide">
+<h1>Developer Guide<a class="headerlink" href="#developer-guide" title="Link to this heading"></a></h1>
+<p>This guide covers the project architecture, key modules, and
+contribution workflow for developers.</p>
+<section id="project-structure">
+<h2>Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading"></a></h2>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>src/mesh_de_warper/
+├── __init__.py         # Public API re-exports
+├── __version__.py      # Version string
+├── plugin.py           # Cura plugin entry point
+├── core/               # Core data types
+│   ├── point.py        #   2D point with offset
+│   ├── mesh.py         #   Rectangular grid of points
+│   ├── calibration.py  #   Calibration orchestrator
+│   └── profile.py      #   Serialisable profile
+├── gcode/              # G-code processing pipeline
+│   ├── ast.py          #   G-code AST data types
+│   ├── parser.py       #   Text-to-AST
+│   ├── emitter.py      #   AST-to-text
+│   └── warper.py       #   Distortion correction engine
+├── interpolation/      # Interpolation algorithms
+│   ├── base.py         #   Abstract base class
+│   ├── bilinear.py     #   Bilinear interpolation
+│   ├── bicubic.py      #   Bicubic (Catmull-Rom)
+│   ├── tps.py          #   Thin plate spline
+│   └── rbf.py          #   Radial basis function
+├── patterns/           # Calibration pattern generators
+│   ├── base.py         #   Config and abstract generator
+│   ├── pdf_generator.py
+│   ├── svg_generator.py
+│   └── stl_generator.py
+├── vision/             # Computer vision assistant
+│   ├── detection.py    #   Point detection (OpenCV)
+│   ├── correction.py   #   Lens &amp; perspective correction
+│   └── calibration.py  #   Vision calibration workflow
+├── visualization/      # Distortion visualisation
+│   ├── heatmap.py      #   Offset magnitude heatmap
+│   ├── vector_field.py #   Offset vector quiver plot
+│   └── preview.py      #   Combined overlay
+└── ui/                 # PyQt5 calibration editor
+    ├── editor.py       #   Main editor widget
+    └── profile_manager.py
+</pre></div>
+</div>
+</section>
+<section id="core-design-principles">
+<h2>Core Design Principles<a class="headerlink" href="#core-design-principles" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p><strong>Stateless interpolation</strong> — all <code class="docutils literal notranslate"><span class="pre">InterpolationAlgorithm</span></code>
+implementations are stateless, enabling caching and parallel evaluation.
+The interpolation result depends only on the mesh and query point.</p></li>
+<li><p><strong>Format-preserving G-code</strong> — the G-code pipeline parses to a full AST,
+warps only XY coordinates in movement commands, and re-emits without
+altering comments, line numbers, word order, or formatting.</p></li>
+<li><p><strong>Graceful degradation</strong> — optional dependencies (PyQt5, OpenCV,
+scikit-image) are imported inside try/except blocks. Missing libraries
+disable the corresponding feature rather than breaking the entire
+package.</p></li>
+<li><p><strong>Separation of concerns</strong> — core data types have no dependency on
+visualisation, UI, or G-code modules.</p></li>
+</ol>
+</section>
+<section id="adding-a-new-interpolation-algorithm">
+<h2>Adding a New Interpolation Algorithm<a class="headerlink" href="#adding-a-new-interpolation-algorithm" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Create a new module in <code class="docutils literal notranslate"><span class="pre">src/mesh_de_warper/interpolation/</span></code>.</p></li>
+<li><p>Subclass <code class="docutils literal notranslate"><span class="pre">InterpolationAlgorithm</span></code> and implement <code class="docutils literal notranslate"><span class="pre">interpolate()</span></code>
+and <code class="docutils literal notranslate"><span class="pre">name()</span></code>.</p></li>
+<li><p>Register it in <code class="docutils literal notranslate"><span class="pre">src/mesh_de_warper/interpolation/__init__.py</span></code>.</p></li>
+<li><p>Add unit tests in <code class="docutils literal notranslate"><span class="pre">tests/</span></code>.</p></li>
+<li><p>Add accuracy tests in <code class="docutils literal notranslate"><span class="pre">tests/unit/test_interpolation_accuracy.py</span></code>.</p></li>
+</ol>
+</section>
+<section id="code-quality">
+<h2>Code Quality<a class="headerlink" href="#code-quality" title="Link to this heading"></a></h2>
+<p>The project uses strict quality checks configured in <code class="docutils literal notranslate"><span class="pre">pyproject.toml</span></code>:</p>
+<ul class="simple">
+<li><p><strong>Ruff</strong> — linting and formatting (<code class="docutils literal notranslate"><span class="pre">ruff</span> <span class="pre">check</span> <span class="pre">.</span> <span class="pre">&amp;&amp;</span> <span class="pre">ruff</span> <span class="pre">format</span> <span class="pre">.</span></code>)</p></li>
+<li><p><strong>Mypy</strong> — strict static typing (<code class="docutils literal notranslate"><span class="pre">mypy</span> <span class="pre">src/</span></code>)</p></li>
+<li><p><strong>Pytest</strong> — 200+ tests with coverage (<code class="docutils literal notranslate"><span class="pre">pytest</span> <span class="pre">--cov=mesh_de_warper</span></code>)</p></li>
+<li><p><strong>Bandit</strong> — security scanning (<code class="docutils literal notranslate"><span class="pre">bandit</span> <span class="pre">-r</span> <span class="pre">src/</span></code>)</p></li>
+</ul>
+<p>All checks are enforced in CI (<code class="docutils literal notranslate"><span class="pre">.github/workflows/ci.yml</span></code>).</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="vision_guide.html" class="btn btn-neutral float-left" title="Vision Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="api_reference.html" class="btn btn-neutral float-right" title="API Reference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, MeshDeWarper Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

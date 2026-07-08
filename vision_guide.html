@@ -1,0 +1,201 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vision Guide &mdash; MeshDeWarper  documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Developer Guide" href="developer_guide.html" />
+    <link rel="prev" title="Calibration Guide" href="calibration_guide.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            MeshDeWarper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="calibration_guide.html">Calibration Guide</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Vision Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#prerequisites">Prerequisites</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#taking-a-good-photo">Taking a Good Photo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#workflow">Workflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#understanding-results">Understanding Results</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#manual-override">Manual Override</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="testing_guide.html">Testing Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="release_guide.html">Release Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contribution_guide.html">Contribution Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MeshDeWarper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Vision Guide</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/vision_guide.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="vision-guide">
+<h1>Vision Guide<a class="headerlink" href="#vision-guide" title="Link to this heading"></a></h1>
+<p>The experimental computer vision assistant detects calibration points
+from a photograph of your printed pattern, reducing manual measurement
+effort.</p>
+<section id="prerequisites">
+<h2>Prerequisites<a class="headerlink" href="#prerequisites" title="Link to this heading"></a></h2>
+<ul>
+<li><p>A camera or smartphone capable of taking a flat, well-lit photo of
+the entire calibration pattern.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">vision</span></code> extras installed:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pip<span class="w"> </span>install<span class="w"> </span><span class="s2">&quot;MeshDeWarper[vision]&quot;</span>
+</pre></div>
+</div>
+</li>
+</ul>
+</section>
+<section id="taking-a-good-photo">
+<h2>Taking a Good Photo<a class="headerlink" href="#taking-a-good-photo" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Place the printed pattern on a flat surface.</p></li>
+<li><p>Position the camera directly above the pattern (top-down view).</p></li>
+<li><p>Ensure even lighting — avoid shadows and glare.</p></li>
+<li><p>Include the entire pattern in the frame.</p></li>
+<li><p>Keep the camera parallel to the pattern to minimise perspective distortion.</p></li>
+</ol>
+</section>
+<section id="workflow">
+<h2>Workflow<a class="headerlink" href="#workflow" title="Link to this heading"></a></h2>
+<p>The vision assistant processes an image through three stages:</p>
+<ol class="arabic simple">
+<li><p><strong>Lens correction</strong> — removes optical distortion from the camera lens.</p></li>
+<li><p><strong>Perspective correction</strong> — warps the image to a top-down orthographic view.</p></li>
+<li><p><strong>Point detection</strong> — locates the printed calibration points and estimates
+their deviation from expected positions.</p></li>
+</ol>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mesh_de_warper.vision</span><span class="w"> </span><span class="kn">import</span> <span class="n">VisionCalibrationAssistant</span>
+
+<span class="n">assistant</span> <span class="o">=</span> <span class="n">VisionCalibrationAssistant</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">assistant</span><span class="o">.</span><span class="n">process_image</span><span class="p">(</span><span class="n">Path</span><span class="p">(</span><span class="s2">&quot;calibration_photo.jpg&quot;</span><span class="p">))</span>
+
+<span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">candidates</span><span class="p">:</span>
+    <span class="n">cal</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">to_calibration</span><span class="p">()</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Detected </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">points</span><span class="p">)</span><span class="si">}</span><span class="s2"> points&quot;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;No calibration candidates found&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="understanding-results">
+<h2>Understanding Results<a class="headerlink" href="#understanding-results" title="Link to this heading"></a></h2>
+<p>The assistant returns a list of <code class="docutils literal notranslate"><span class="pre">CandidateCalibration</span></code> objects, each
+containing:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">points</span></code> — list of detected <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">y,</span> <span class="pre">offset_x,</span> <span class="pre">offset_y)</span></code> values</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">confidence</span></code> — a score from 0..1 indicating detection quality</p></li>
+</ul>
+<p>Review each candidate carefully before using it. The vision system is
+experimental and may produce false positives, especially with:</p>
+<ul class="simple">
+<li><p>Poor lighting or focus</p></li>
+<li><p>Non-flat surfaces</p></li>
+<li><p>Patterns that are partially outside the frame</p></li>
+<li><p>High lens distortion not fully corrected</p></li>
+</ul>
+</section>
+<section id="manual-override">
+<h2>Manual Override<a class="headerlink" href="#manual-override" title="Link to this heading"></a></h2>
+<p>You can always override individual detected points before creating a
+calibration profile. Combine the vision assistant with manual measurements
+for best results:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">candidate</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">candidates</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="k">for</span> <span class="n">point</span> <span class="ow">in</span> <span class="n">candidate</span><span class="o">.</span><span class="n">points</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">x</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">y</span><span class="si">:</span><span class="s2">.1f</span><span class="si">}</span><span class="s2">): &quot;</span>
+          <span class="sa">f</span><span class="s2">&quot;offset (</span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">offset_x</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">, </span><span class="si">{</span><span class="n">point</span><span class="o">.</span><span class="n">offset_y</span><span class="si">:</span><span class="s2">.3f</span><span class="si">}</span><span class="s2">)&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="calibration_guide.html" class="btn btn-neutral float-left" title="Calibration Guide" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="developer_guide.html" class="btn btn-neutral float-right" title="Developer Guide" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, MeshDeWarper Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

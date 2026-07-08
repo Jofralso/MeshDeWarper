@@ -1,0 +1,241 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mesh_de_warper.patterns.pdf_generator &mdash; MeshDeWarper  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../../index.html" class="icon icon-home">
+            MeshDeWarper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../calibration_guide.html">Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../vision_guide.html">Vision Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../testing_guide.html">Testing Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../release_guide.html">Release Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../contribution_guide.html">Contribution Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../../index.html">MeshDeWarper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">mesh_de_warper.patterns.pdf_generator</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for mesh_de_warper.patterns.pdf_generator</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;PDF calibration pattern generator using reportlab.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.lib.pagesizes</span><span class="w"> </span><span class="kn">import</span> <span class="n">A4</span><span class="p">,</span> <span class="n">landscape</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.lib.units</span><span class="w"> </span><span class="kn">import</span> <span class="n">mm</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">reportlab.pdfgen</span><span class="w"> </span><span class="kn">import</span> <span class="n">canvas</span> <span class="k">as</span> <span class="n">pdf_canvas</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mesh_de_warper.patterns.base</span><span class="w"> </span><span class="kn">import</span> <span class="p">(</span>
+    <span class="n">FiducialMarker</span><span class="p">,</span>
+    <span class="n">PatternConfig</span><span class="p">,</span>
+    <span class="n">PatternGenerator</span><span class="p">,</span>
+    <span class="n">PointStyle</span><span class="p">,</span>
+<span class="p">)</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">PAPER_SIZES</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;A4&quot;</span><span class="p">:</span> <span class="n">A4</span><span class="p">,</span>
+    <span class="s2">&quot;A3&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">420</span> <span class="o">*</span> <span class="n">mm</span><span class="p">,</span> <span class="mi">297</span> <span class="o">*</span> <span class="n">mm</span><span class="p">),</span>
+    <span class="s2">&quot;letter&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">612</span><span class="p">,</span> <span class="mi">792</span><span class="p">),</span>
+    <span class="s2">&quot;tabloid&quot;</span><span class="p">:</span> <span class="p">(</span><span class="mi">792</span><span class="p">,</span> <span class="mi">1224</span><span class="p">),</span>
+<span class="p">}</span>
+
+
+<div class="viewcode-block" id="PdfPatternGenerator">
+<a class="viewcode-back" href="../../../api_reference.html#mesh_de_warper.patterns.PdfPatternGenerator">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">PdfPatternGenerator</span><span class="p">(</span><span class="n">PatternGenerator</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generates dimensionally accurate calibration patterns as PDF.</span>
+
+<span class="sd">    Uses reportlab for precise vector output suitable for printing.</span>
+<span class="sd">    Supports configurable paper sizes, margins, and fiducial markers.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">paper_size</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;A4&quot;</span><span class="p">,</span> <span class="n">landscape_mode</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_paper_size</span> <span class="o">=</span> <span class="n">paper_size</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_landscape</span> <span class="o">=</span> <span class="n">landscape_mode</span>
+
+<div class="viewcode-block" id="PdfPatternGenerator.generate">
+<a class="viewcode-back" href="../../../api_reference.html#mesh_de_warper.patterns.PdfPatternGenerator.generate">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">generate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">PatternConfig</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Path</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a PDF calibration pattern.&quot;&quot;&quot;</span>
+        <span class="n">output_path</span> <span class="o">=</span> <span class="n">output_path</span><span class="o">.</span><span class="n">with_suffix</span><span class="p">(</span><span class="s2">&quot;.pdf&quot;</span><span class="p">)</span>
+        <span class="n">page_size</span> <span class="o">=</span> <span class="n">PAPER_SIZES</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_paper_size</span><span class="p">,</span> <span class="n">A4</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_landscape</span><span class="p">:</span>
+            <span class="n">page_size</span> <span class="o">=</span> <span class="n">landscape</span><span class="p">(</span><span class="n">page_size</span><span class="p">)</span>
+
+        <span class="n">c</span> <span class="o">=</span> <span class="n">pdf_canvas</span><span class="o">.</span><span class="n">Canvas</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">output_path</span><span class="p">),</span> <span class="n">pagesize</span><span class="o">=</span><span class="n">page_size</span><span class="p">)</span>
+        <span class="n">width</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="n">page_size</span>
+
+        <span class="c1"># Scale factor: mm -&gt; points (1 mm = 72/25.4 points ≈ 2.835 pt)</span>
+        <span class="n">mm_to_pt</span> <span class="o">=</span> <span class="mf">72.0</span> <span class="o">/</span> <span class="mf">25.4</span>
+
+        <span class="c1"># Calculate grid dimensions</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">bed_width</span> <span class="o">/</span> <span class="n">config</span><span class="o">.</span><span class="n">spacing</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+        <span class="n">rows</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">bed_height</span> <span class="o">/</span> <span class="n">config</span><span class="o">.</span><span class="n">spacing</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+
+        <span class="c1"># Centre the grid on the page</span>
+        <span class="n">grid_w</span> <span class="o">=</span> <span class="p">(</span><span class="n">cols</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">config</span><span class="o">.</span><span class="n">spacing</span> <span class="o">*</span> <span class="n">mm_to_pt</span>
+        <span class="n">grid_h</span> <span class="o">=</span> <span class="p">(</span><span class="n">rows</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">*</span> <span class="n">config</span><span class="o">.</span><span class="n">spacing</span> <span class="o">*</span> <span class="n">mm_to_pt</span>
+        <span class="n">offset_x</span> <span class="o">=</span> <span class="p">(</span><span class="n">width</span> <span class="o">-</span> <span class="n">grid_w</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+        <span class="n">offset_y</span> <span class="o">=</span> <span class="p">(</span><span class="n">height</span> <span class="o">-</span> <span class="n">grid_h</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+
+        <span class="n">c</span><span class="o">.</span><span class="n">setStrokeColorRGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">setFillColorRGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">rows</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">cols</span><span class="p">):</span>
+                <span class="n">px</span> <span class="o">=</span> <span class="n">offset_x</span> <span class="o">+</span> <span class="n">col</span> <span class="o">*</span> <span class="n">config</span><span class="o">.</span><span class="n">spacing</span> <span class="o">*</span> <span class="n">mm_to_pt</span>
+                <span class="n">py</span> <span class="o">=</span> <span class="n">offset_y</span> <span class="o">+</span> <span class="n">row</span> <span class="o">*</span> <span class="n">config</span><span class="o">.</span><span class="n">spacing</span> <span class="o">*</span> <span class="n">mm_to_pt</span>
+
+                <span class="bp">self</span><span class="o">.</span><span class="n">_draw_point</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">px</span><span class="p">,</span> <span class="n">py</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">show_numbers</span><span class="p">:</span>
+                    <span class="n">num</span> <span class="o">=</span> <span class="n">row</span> <span class="o">*</span> <span class="n">cols</span> <span class="o">+</span> <span class="n">col</span> <span class="o">+</span> <span class="mi">1</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">setFont</span><span class="p">(</span><span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span> <span class="n">config</span><span class="o">.</span><span class="n">number_font_size</span> <span class="o">*</span> <span class="n">mm_to_pt</span><span class="p">)</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">drawString</span><span class="p">(</span>
+                        <span class="n">px</span> <span class="o">+</span> <span class="n">config</span><span class="o">.</span><span class="n">point_size</span> <span class="o">*</span> <span class="n">mm_to_pt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span>
+                        <span class="n">py</span> <span class="o">-</span> <span class="n">config</span><span class="o">.</span><span class="n">number_font_size</span> <span class="o">*</span> <span class="n">mm_to_pt</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span>
+                        <span class="nb">str</span><span class="p">(</span><span class="n">num</span><span class="p">),</span>
+                    <span class="p">)</span>
+
+        <span class="c1"># Draw fiducial markers at corners</span>
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">fiducial</span> <span class="o">!=</span> <span class="n">FiducialMarker</span><span class="o">.</span><span class="n">NONE</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_draw_fiducials</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">offset_x</span><span class="p">,</span> <span class="n">offset_y</span><span class="p">,</span> <span class="n">grid_w</span><span class="p">,</span> <span class="n">grid_h</span><span class="p">,</span> <span class="n">config</span><span class="p">)</span>
+
+        <span class="n">c</span><span class="o">.</span><span class="n">save</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;PDF pattern generated: </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">output_path</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">output_path</span></div>
+
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_draw_point</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">pdf_canvas</span><span class="o">.</span><span class="n">Canvas</span><span class="p">,</span> <span class="n">x</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span> <span class="n">config</span><span class="p">:</span> <span class="n">PatternConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">sz</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">point_size</span> <span class="o">*</span> <span class="mf">72.0</span> <span class="o">/</span> <span class="mf">25.4</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">setLineWidth</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">point_style</span> <span class="o">==</span> <span class="n">PointStyle</span><span class="o">.</span><span class="n">CROSS</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">sz</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">+</span> <span class="n">sz</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">-</span> <span class="n">sz</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">+</span> <span class="n">sz</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">point_style</span> <span class="o">==</span> <span class="n">PointStyle</span><span class="o">.</span><span class="n">DOT</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sz</span> <span class="o">/</span> <span class="mi">2</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">point_style</span> <span class="o">==</span> <span class="n">PointStyle</span><span class="o">.</span><span class="n">CIRCLE</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">point_style</span> <span class="o">==</span> <span class="n">PointStyle</span><span class="o">.</span><span class="n">TARGET</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">sz</span> <span class="o">/</span> <span class="mi">3</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">_draw_fiducials</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">c</span><span class="p">:</span> <span class="n">pdf_canvas</span><span class="o">.</span><span class="n">Canvas</span><span class="p">,</span>
+        <span class="n">ox</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">oy</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">w</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">h</span><span class="p">:</span> <span class="nb">float</span><span class="p">,</span>
+        <span class="n">config</span><span class="p">:</span> <span class="n">PatternConfig</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">corners</span> <span class="o">=</span> <span class="p">[(</span><span class="n">ox</span><span class="p">,</span> <span class="n">oy</span><span class="p">),</span> <span class="p">(</span><span class="n">ox</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">oy</span><span class="p">),</span> <span class="p">(</span><span class="n">ox</span><span class="p">,</span> <span class="n">oy</span> <span class="o">+</span> <span class="n">h</span><span class="p">),</span> <span class="p">(</span><span class="n">ox</span> <span class="o">+</span> <span class="n">w</span><span class="p">,</span> <span class="n">oy</span> <span class="o">+</span> <span class="n">h</span><span class="p">)]</span>
+        <span class="n">sz</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">fiducial_size</span> <span class="o">*</span> <span class="mf">72.0</span> <span class="o">/</span> <span class="mf">25.4</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">setLineWidth</span><span class="p">(</span><span class="mf">1.0</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">cx</span><span class="p">,</span> <span class="n">cy</span> <span class="ow">in</span> <span class="n">corners</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">fiducial</span> <span class="o">==</span> <span class="n">FiducialMarker</span><span class="o">.</span><span class="n">CORNER_CROSS</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">cx</span> <span class="o">-</span> <span class="n">sz</span><span class="p">,</span> <span class="n">cy</span> <span class="o">-</span> <span class="n">sz</span><span class="p">,</span> <span class="n">cx</span> <span class="o">+</span> <span class="n">sz</span><span class="p">,</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">sz</span><span class="p">)</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">line</span><span class="p">(</span><span class="n">cx</span> <span class="o">+</span> <span class="n">sz</span><span class="p">,</span> <span class="n">cy</span> <span class="o">-</span> <span class="n">sz</span><span class="p">,</span> <span class="n">cx</span> <span class="o">-</span> <span class="n">sz</span><span class="p">,</span> <span class="n">cy</span> <span class="o">+</span> <span class="n">sz</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">fiducial</span> <span class="o">==</span> <span class="n">FiducialMarker</span><span class="o">.</span><span class="n">CORNER_CIRCLE</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">config</span><span class="o">.</span><span class="n">fiducial</span> <span class="o">==</span> <span class="n">FiducialMarker</span><span class="o">.</span><span class="n">CORNER_TARGET</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">sz</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">circle</span><span class="p">(</span><span class="n">cx</span><span class="p">,</span> <span class="n">cy</span><span class="p">,</span> <span class="n">sz</span> <span class="o">*</span> <span class="mf">0.6</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, MeshDeWarper Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,274 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>mesh_de_warper.plugin &mdash; MeshDeWarper  documentation</title>
+      <link rel="stylesheet" type="text/css" href="../../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../../_static/css/theme.css?v=9edc463e" />
+
+  
+      <script src="../../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../../_static/documentation_options.js?v=5929fcd5"></script>
+      <script src="../../_static/doctools.js?v=fd6eb6e6"></script>
+      <script src="../../_static/sphinx_highlight.js?v=6ffebe34"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            MeshDeWarper
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../user_guide.html">User Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../calibration_guide.html">Calibration Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../vision_guide.html">Vision Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../developer_guide.html">Developer Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../api_reference.html">API Reference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../testing_guide.html">Testing Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../release_guide.html">Release Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../contribution_guide.html">Contribution Guide</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">MeshDeWarper</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">mesh_de_warper.plugin</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for mesh_de_warper.plugin</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;Ultimaker Cura plugin entry point.&quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">__future__</span><span class="w"> </span><span class="kn">import</span> <span class="n">annotations</span>
+
+<span class="kn">import</span><span class="w"> </span><span class="nn">logging</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections.abc</span><span class="w"> </span><span class="kn">import</span> <span class="n">Callable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pathlib</span><span class="w"> </span><span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Any</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">mesh_de_warper.__version__</span><span class="w"> </span><span class="kn">import</span> <span class="n">__version__</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mesh_de_warper.core</span><span class="w"> </span><span class="kn">import</span> <span class="n">Calibration</span><span class="p">,</span> <span class="n">CalibrationProfile</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mesh_de_warper.gcode.warper</span><span class="w"> </span><span class="kn">import</span> <span class="n">GCodeWarper</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">mesh_de_warper.interpolation</span><span class="w"> </span><span class="kn">import</span> <span class="n">BilinearInterpolation</span><span class="p">,</span> <span class="n">InterpolationAlgorithm</span>
+
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="n">PLUGIN_NAME</span> <span class="o">=</span> <span class="s2">&quot;XY Distortion Calibration&quot;</span>
+<span class="n">PLUGIN_VERSION</span> <span class="o">=</span> <span class="n">__version__</span>
+
+
+<div class="viewcode-block" id="CuraPlugin">
+<a class="viewcode-back" href="../../api_reference.html#mesh_de_warper.plugin.CuraPlugin">[docs]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">CuraPlugin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Main plugin class for Ultimaker Cura integration.</span>
+
+<span class="sd">    Manages plugin lifecycle, settings, and G-code post-processing.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calibration</span><span class="p">:</span> <span class="n">Calibration</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span><span class="p">:</span> <span class="n">CalibrationProfile</span> <span class="o">|</span> <span class="kc">None</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check if the plugin is enabled.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span>
+
+<div class="viewcode-block" id="CuraPlugin.set_enabled">
+<a class="viewcode-back" href="../../api_reference.html#mesh_de_warper.plugin.CuraPlugin.set_enabled">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_enabled</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">enabled</span><span class="p">:</span> <span class="nb">bool</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Enable or disable the plugin.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span> <span class="o">=</span> <span class="n">enabled</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Plugin </span><span class="si">%s</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">&quot;enabled&quot;</span> <span class="k">if</span> <span class="n">enabled</span> <span class="k">else</span> <span class="s2">&quot;disabled&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CuraPlugin.get_calibration">
+<a class="viewcode-back" href="../../api_reference.html#mesh_de_warper.plugin.CuraPlugin.get_calibration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">get_calibration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Calibration</span> <span class="o">|</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Get the active calibration, or None.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calibration</span></div>
+
+
+<div class="viewcode-block" id="CuraPlugin.set_calibration">
+<a class="viewcode-back" href="../../api_reference.html#mesh_de_warper.plugin.CuraPlugin.set_calibration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">set_calibration</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">calibration</span><span class="p">:</span> <span class="n">Calibration</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Set the active calibration.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calibration</span> <span class="o">=</span> <span class="n">calibration</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Calibration updated (</span><span class="si">%d</span><span class="s2"> points)&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calibration</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">num_points</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CuraPlugin.load_profile">
+<a class="viewcode-back" href="../../api_reference.html#mesh_de_warper.plugin.CuraPlugin.load_profile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">load_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CalibrationProfile</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Load a calibration profile from file.&quot;&quot;&quot;</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="n">CalibrationProfile</span><span class="o">.</span><span class="n">load</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span> <span class="o">=</span> <span class="n">profile</span>
+
+        <span class="c1"># Reconstruct calibration from profile</span>
+        <span class="n">interp</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_interpolation_from_name</span><span class="p">(</span><span class="n">profile</span><span class="o">.</span><span class="n">interpolation</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_calibration</span> <span class="o">=</span> <span class="n">Calibration</span><span class="o">.</span><span class="n">from_profile</span><span class="p">(</span><span class="n">profile</span><span class="p">,</span> <span class="n">interp</span><span class="p">)</span>
+
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Profile loaded: </span><span class="si">%s</span><span class="s2"> (</span><span class="si">%s</span><span class="s2">)&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">profile</span><span class="o">.</span><span class="n">printer</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">profile</span></div>
+
+
+<div class="viewcode-block" id="CuraPlugin.save_profile">
+<a class="viewcode-back" href="../../api_reference.html#mesh_de_warper.plugin.CuraPlugin.save_profile">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">save_profile</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Save current calibration state to a profile file.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calibration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No calibration to save&quot;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+        <span class="n">profile</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calibration</span><span class="o">.</span><span class="n">to_profile</span><span class="p">()</span>
+        <span class="n">profile</span><span class="o">.</span><span class="n">save</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_profile</span> <span class="o">=</span> <span class="n">profile</span></div>
+
+
+<div class="viewcode-block" id="CuraPlugin.warp_gcode">
+<a class="viewcode-back" href="../../api_reference.html#mesh_de_warper.plugin.CuraPlugin.warp_gcode">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">warp_gcode</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">input_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">:</span> <span class="n">Path</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Warp a G-code file using the current calibration.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">_enabled</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Plugin disabled, copying G-code without warping&quot;</span><span class="p">)</span>
+            <span class="n">output_path</span><span class="o">.</span><span class="n">write_text</span><span class="p">(</span><span class="n">input_path</span><span class="o">.</span><span class="n">read_text</span><span class="p">())</span>
+            <span class="k">return</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calibration</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;No calibration loaded; cannot warp G-code&quot;</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="n">msg</span><span class="p">)</span>
+
+        <span class="n">warper</span> <span class="o">=</span> <span class="n">GCodeWarper</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_calibration</span><span class="p">)</span>
+        <span class="n">warper</span><span class="o">.</span><span class="n">warp_file</span><span class="p">(</span><span class="n">input_path</span><span class="p">,</span> <span class="n">output_path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CuraPlugin.reset_calibration">
+<a class="viewcode-back" href="../../api_reference.html#mesh_de_warper.plugin.CuraPlugin.reset_calibration">[docs]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset_calibration</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Reset all offsets to zero.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_calibration</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_calibration</span><span class="o">.</span><span class="n">mesh</span><span class="o">.</span><span class="n">reset_offsets</span><span class="p">()</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Calibration reset&quot;</span><span class="p">)</span></div>
+
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span><span class="w"> </span><span class="nf">_interpolation_from_name</span><span class="p">(</span><span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">InterpolationAlgorithm</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Resolve an interpolation algorithm by name.&quot;&quot;&quot;</span>
+        <span class="n">algos</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="n">InterpolationAlgorithm</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;bilinear&quot;</span><span class="p">:</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">BilinearInterpolation</span><span class="p">(),</span>
+        <span class="p">}</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="kn">from</span><span class="w"> </span><span class="nn">mesh_de_warper.interpolation.bicubic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BicubicInterpolation</span>
+
+            <span class="n">algos</span><span class="p">[</span><span class="s2">&quot;bicubic&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">BicubicInterpolation</span><span class="p">()</span>
+
+            <span class="kn">from</span><span class="w"> </span><span class="nn">mesh_de_warper.interpolation.tps</span><span class="w"> </span><span class="kn">import</span> <span class="n">ThinPlateSplineInterpolation</span>
+
+            <span class="n">algos</span><span class="p">[</span><span class="s2">&quot;thin_plate_spline&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">ThinPlateSplineInterpolation</span><span class="p">()</span>
+
+            <span class="kn">from</span><span class="w"> </span><span class="nn">mesh_de_warper.interpolation.rbf</span><span class="w"> </span><span class="kn">import</span> <span class="n">RBFInterpolation</span>
+
+            <span class="n">algos</span><span class="p">[</span><span class="s2">&quot;rbf_multiquadric&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="k">lambda</span><span class="p">:</span> <span class="n">RBFInterpolation</span><span class="p">(</span><span class="n">kernel</span><span class="o">=</span><span class="s2">&quot;multiquadric&quot;</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+            <span class="k">pass</span>  <span class="c1"># pragma: no cover</span>
+
+        <span class="n">factory</span> <span class="o">=</span> <span class="n">algos</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">factory</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Unknown interpolation &#39;</span><span class="si">%s</span><span class="s2">&#39;, falling back to bilinear&quot;</span><span class="p">,</span> <span class="n">name</span><span class="p">)</span>
+            <span class="n">factory</span> <span class="o">=</span> <span class="n">algos</span><span class="p">[</span><span class="s2">&quot;bilinear&quot;</span><span class="p">]</span>
+
+        <span class="k">return</span> <span class="n">factory</span><span class="p">()</span></div>
+
+
+
+<span class="c1"># Cura extension registration</span>
+<div class="viewcode-block" id="get_meta_data">
+<a class="viewcode-back" href="../../api_reference.html#mesh_de_warper.plugin.get_meta_data">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_meta_data</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Return plugin metadata for Cura extension registration.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="n">PLUGIN_VERSION</span><span class="p">,</span>
+        <span class="s2">&quot;plugin_name&quot;</span><span class="p">:</span> <span class="n">PLUGIN_NAME</span><span class="p">,</span>
+        <span class="s2">&quot;supported_cura_versions&quot;</span><span class="p">:</span> <span class="p">[</span><span class="s2">&quot;&gt;=5.0&quot;</span><span class="p">],</span>
+    <span class="p">}</span></div>
+
+
+
+<div class="viewcode-block" id="register">
+<a class="viewcode-back" href="../../api_reference.html#mesh_de_warper.plugin.register">[docs]</a>
+<span class="k">def</span><span class="w"> </span><span class="nf">register</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="n">CuraPlugin</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Register the plugin with Cura&#39;s extension system.&quot;&quot;&quot;</span>
+    <span class="n">plugin</span> <span class="o">=</span> <span class="n">CuraPlugin</span><span class="p">()</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">%s</span><span class="s2"> v</span><span class="si">%s</span><span class="s2"> registered&quot;</span><span class="p">,</span> <span class="n">PLUGIN_NAME</span><span class="p">,</span> <span class="n">PLUGIN_VERSION</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">plugin</span></div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2026, MeshDeWarper Contributors.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
