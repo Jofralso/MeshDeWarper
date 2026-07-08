@@ -6,23 +6,23 @@ that the output is syntactically valid and semantically correct.
 
 from __future__ import annotations
 
-import math
 from pathlib import Path
 
 import pytest
 
-from cura_xy_calibration.core.calibration import Calibration
-from cura_xy_calibration.core.point import Point
-from cura_xy_calibration.gcode.emitter import GCodeEmitter
-from cura_xy_calibration.gcode.parser import GCodeParser
-from cura_xy_calibration.gcode.warper import GCodeWarper
-from cura_xy_calibration.interpolation.bilinear import BilinearInterpolation
-
+from mesh_de_warper.core.calibration import Calibration
+from mesh_de_warper.core.point import Point
+from mesh_de_warper.gcode.emitter import GCodeEmitter
+from mesh_de_warper.gcode.parser import GCodeParser
+from mesh_de_warper.gcode.warper import GCodeWarper
+from mesh_de_warper.interpolation.bilinear import BilinearInterpolation
 
 # ── Helpers ─────────────────────────────────────────────────────────
 
 
-def _uniform_cal(spacing: float = 50.0, offset_x: float = 0.0, offset_y: float = 0.0) -> Calibration:
+def _uniform_cal(
+    spacing: float = 50.0, offset_x: float = 0.0, offset_y: float = 0.0
+) -> Calibration:
     """Create a calibration with a constant offset across the whole bed."""
     cal = Calibration.for_bed(
         width=200.0,
@@ -291,7 +291,7 @@ class TestPipelineEdgeCases:
         # Empty lines become empty output lines
         assert out.count("\n") >= 2
         # Non-empty lines survive
-        lines = [l for l in out.split("\n") if l.strip()]
+        lines = [ln for ln in out.split("\n") if ln.strip()]
         assert len(lines) == 2
 
     def test_large_offset(self) -> None:
@@ -339,16 +339,17 @@ class TestPipelineEdgeCases:
                 assert px != pytest.approx(px - 0.1)  # changed
 
 
+GCODE_INPUTS = [
+    "G1 X10 Y20 E0.5 F300",
+    "G0 X100 Y100",
+    "G91\nG1 X10 Y10\nG90",
+    "M104 S200 ; set temp",
+    "; just a comment",
+]
+
+
 class TestParseEmitRoundTrip:
     """Verify that parsing and re-emitting preserves semantics."""
-
-    GCODE_INPUTS = [
-        "G1 X10 Y20 E0.5 F300",
-        "G0 X100 Y100",
-        "G91\nG1 X10 Y10\nG90",
-        "M104 S200 ; set temp",
-        "; just a comment",
-    ]
 
     @pytest.mark.parametrize("gcode", GCODE_INPUTS)
     def test_round_trip_no_warp(self, gcode: str) -> None:

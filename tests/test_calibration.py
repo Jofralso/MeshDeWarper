@@ -2,9 +2,9 @@
 
 from __future__ import annotations
 
-from cura_xy_calibration.core.calibration import Calibration
-from cura_xy_calibration.core.mesh import Mesh
-from cura_xy_calibration.interpolation.bilinear import BilinearInterpolation
+from mesh_de_warper.core.calibration import Calibration
+from mesh_de_warper.core.mesh import Mesh
+from mesh_de_warper.interpolation.bilinear import BilinearInterpolation
 
 
 class TestCalibration:

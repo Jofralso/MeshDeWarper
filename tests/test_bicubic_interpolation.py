@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import numpy as np
 
-from cura_xy_calibration.core.mesh import Mesh
-from cura_xy_calibration.core.point import Point
-from cura_xy_calibration.interpolation.bicubic import BicubicInterpolation
+from mesh_de_warper.core.mesh import Mesh
+from mesh_de_warper.core.point import Point
+from mesh_de_warper.interpolation.bicubic import BicubicInterpolation
 
 
 class TestBicubicInterpolation:

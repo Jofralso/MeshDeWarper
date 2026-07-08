@@ -6,13 +6,12 @@ import dataclasses
 import tempfile
 from pathlib import Path
 
-import numpy as np
 import pytest
 
-from cura_xy_calibration.core.mesh import Mesh
-from cura_xy_calibration.visualization.heatmap import HeatmapConfig, HeatmapRenderer
-from cura_xy_calibration.visualization.vector_field import VectorFieldConfig, VectorFieldRenderer
-from cura_xy_calibration.visualization.preview import PreviewConfig, CalibrationPreview
+from mesh_de_warper.core.mesh import Mesh
+from mesh_de_warper.visualization.heatmap import HeatmapConfig, HeatmapRenderer
+from mesh_de_warper.visualization.preview import CalibrationPreview, PreviewConfig
+from mesh_de_warper.visualization.vector_field import VectorFieldConfig, VectorFieldRenderer
 
 
 @pytest.fixture
@@ -166,7 +165,7 @@ class TestCalibrationPreview:
 
 def test_import_all() -> None:
     """Verify all visualisation classes are importable from the package."""
-    from cura_xy_calibration import HeatmapRenderer, VectorFieldRenderer, CalibrationPreview
+    from mesh_de_warper import CalibrationPreview, HeatmapRenderer, VectorFieldRenderer
 
     assert HeatmapRenderer is not None
     assert VectorFieldRenderer is not None

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from cura_xy_calibration.gcode.ast import (
+from mesh_de_warper.gcode.ast import (
     GCodeAst,
     GCodeBlock,
     GCodeCommand,
@@ -46,6 +46,10 @@ class TestGCodeCommand:
     def test_no_g_code(self) -> None:
         cmd = GCodeCommand(words=[GCodeWord("X", 10.0)])
         assert cmd.g_code is None
+
+    def test_no_m_code(self) -> None:
+        cmd = GCodeCommand(words=[GCodeWord("G", 1)])
+        assert cmd.m_code is None
 
     def test_position(self) -> None:
         cmd = GCodeCommand(

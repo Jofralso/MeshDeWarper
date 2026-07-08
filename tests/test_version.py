@@ -1,6 +1,6 @@
 """Tests for version module."""
 
-from cura_xy_calibration.__version__ import __version__, __version_info__
+from mesh_de_warper.__version__ import __version__, __version_info__
 
 
 class TestVersion:

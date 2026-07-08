@@ -6,9 +6,9 @@ from pathlib import Path
 
 import pytest
 
-from cura_xy_calibration.core.calibration import Calibration
-from cura_xy_calibration.interpolation.bilinear import BilinearInterpolation
-from cura_xy_calibration.plugin import CuraPlugin, get_meta_data, register
+from mesh_de_warper.core.calibration import Calibration
+from mesh_de_warper.interpolation.bilinear import BilinearInterpolation
+from mesh_de_warper.plugin import CuraPlugin, get_meta_data, register
 
 
 class TestCuraPlugin:
@@ -58,12 +58,16 @@ class TestCuraPlugin:
     def test_save_without_calibration_raises(self) -> None:
         plugin = CuraPlugin()
         with pytest.raises(RuntimeError, match="No calibration to save"):
-            plugin.save_profile(Path("/tmp/test.json"))
+            plugin.save_profile(Path("/tmp/test.json"))  # noqa: S108
 
     def test_warp_without_calibration_raises(self) -> None:
         plugin = CuraPlugin()
         with pytest.raises(RuntimeError, match="No calibration loaded"):
-            plugin.warp_gcode(Path("/tmp/in.gcode"), Path("/tmp/out.gcode"))
+            plugin.warp_gcode(Path("/tmp/in.gcode"), Path("/tmp/out.gcode"))  # noqa: S108
+
+    def test_reset_calibration_without_calibration(self) -> None:
+        plugin = CuraPlugin()
+        plugin.reset_calibration()
 
     def test_reset_calibration(self) -> None:
         plugin = CuraPlugin()
@@ -97,3 +101,30 @@ class TestCuraPlugin:
         plugin = CuraPlugin()
         interp = plugin._interpolation_from_name("nonexistent")
         assert interp.name() == "bilinear"  # fallback
+
+    def test_warp_with_calibration(self, temp_dir: Path) -> None:
+        plugin = CuraPlugin()
+        cal = Calibration.for_bed(
+            width=100.0,
+            height=100.0,
+            spacing=10.0,
+            interpolation=BilinearInterpolation(),
+        )
+        plugin.set_calibration(cal)
+        input_path = temp_dir / "input.gcode"
+        output_path = temp_dir / "output.gcode"
+        input_path.write_text("G1 X10 Y20\nG1 X30 Y40\n")
+        plugin.warp_gcode(input_path, output_path)
+        assert output_path.exists()
+        content = output_path.read_text()
+        assert "G1" in content
+
+    def test_warp_disabled_copies_input_to_output(self, temp_dir: Path) -> None:
+        plugin = CuraPlugin()
+        plugin.set_enabled(False)
+        input_path = temp_dir / "input.gcode"
+        output_path = temp_dir / "output.gcode"
+        input_path.write_text("G1 X10 Y20\n")
+        plugin.warp_gcode(input_path, output_path)
+        assert output_path.exists()
+        assert output_path.read_text() == "G1 X10 Y20\n"

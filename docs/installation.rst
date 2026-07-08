@@ -20,10 +20,10 @@ Installing from Source
 
 .. code-block:: bash
 
-   git clone https://github.com/cura-xy-calibration/CuraXYCalibration.git
-   cd CuraXYCalibration
+   git clone https://github.com/mesh-de-warper/MeshDeWarper.git
+   cd MeshDeWarper
    python -m venv .venv
    source .venv/bin/activate
    pip install -e ".[dev,test]"
 
-.. _Releases page: https://github.com/cura-xy-calibration/CuraXYCalibration/releases
+.. _Releases page: https://github.com/mesh-de-warper/MeshDeWarper/releases

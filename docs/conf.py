@@ -8,9 +8,9 @@ import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-project = "CuraXYCalibration"
-copyright = "2026, CuraXYCalibration Contributors"
-author = "CuraXYCalibration Contributors"
+project = "MeshDeWarper"
+copyright = "2026, MeshDeWarper Contributors"
+author = "MeshDeWarper Contributors"
 
 extensions = [
     "sphinx.ext.autodoc",

@@ -8,7 +8,7 @@
 
 ## Reporting a Vulnerability
 
-Report security vulnerabilities to security@cura-xy-calibration.dev.
+Report security vulnerabilities to security@mesh-de-warper.dev.
 
 Do **not** file public GitHub issues for security vulnerabilities.
 

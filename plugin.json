@@ -1,0 +1,11 @@
+{
+    "name": "MeshDeWarper",
+    "version": "0.2.0",
+    "description": "Full XY distortion calibration plugin for Ultimaker Cura. Warp G-code to correct printer positioning errors across the entire bed.",
+    "author": "MeshDeWarper Contributors",
+    "api": 8,
+    "module": "mesh_de_warper.plugin",
+    "license": "AGPL-3.0-only",
+    "website": "https://github.com/Jofralso/MeshDeWarper",
+    "supported_sdk_versions": ["8.0.0", "8.1.0", "8.2.0", "8.3.0", "8.4.0", "8.5.0"]
+}

@@ -1,12 +1,12 @@
 # Contributing
 
-Thank you for considering contributing to CuraXYCalibration!
+Thank you for considering contributing to MeshDeWarper!
 
 ## Development Setup
 
 ```bash
-git clone https://github.com/cura-xy-calibration/CuraXYCalibration.git
-cd CuraXYCalibration
+git clone https://github.com/Jofralso/MeshDeWarper.git
+cd MeshDeWarper
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev,test,docs]"

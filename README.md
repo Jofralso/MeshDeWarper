@@ -1,4 +1,4 @@
-# CuraXYCalibration
+# MeshDeWarper
 
 > Full XY distortion calibration plugin for Ultimaker Cura.
 
@@ -8,15 +8,12 @@ distortion with sub-millimeter precision.
 
 ## Features
 
-- **Interactive Calibration Editor** — drag, snap, group edit, numeric entry
 - **Calibration Pattern Generator** — print reference grids as PDF / SVG / STL
 - **G-Code Warping Engine** — full AST parser, format-preserving output
 - **Multiple Interpolation Algorithms** — bilinear, bicubic, thin plate splines, RBF
 - **Heatmap & Vector Field Visualization** — see distortion at a glance
-- **Calibration Profile Manager** — save, load, compare, import/export profiles
+- **Calibration Profile Manager** — save and load profiles
 - **Experimental Computer Vision Assistant** — detect printed points from photos
-- **100×100 Grid Support** — 10,000+ nodes with no UI freeze
-- **Undo/Redo** — full operation history
 
 ## Installation
 
@@ -28,8 +25,10 @@ distortion with sub-millimeter precision.
 ## Quick Start
 
 ```python
-from cura_xy_calibration.core import Calibration, Point
-from cura_xy_calibration.interpolation import BilinearInterpolation
+from pathlib import Path
+from mesh_de_warper.core import Calibration
+from mesh_de_warper.gcode.warper import GCodeWarper
+from mesh_de_warper.interpolation import BilinearInterpolation
 
 # Create a calibration grid
 cal = Calibration.for_bed(
@@ -38,18 +37,19 @@ cal = Calibration.for_bed(
 )
 
 # Warp G-code
-warped = cal.warp_gcode("input.gcode", "output.gcode")
+warper = GCodeWarper(cal)
+warper.warp_file(Path("input.gcode"), Path("output.gcode"))
 ```
 
 ## Documentation
 
-Full documentation is available at [cura-xy-calibration.readthedocs.io][docs].
+Full documentation is available on the [GitHub repository][repo].
 
 ## Development
 
 ```bash
-git clone https://github.com/cura-xy-calibration/CuraXYCalibration.git
-cd CuraXYCalibration
+git clone https://github.com/Jofralso/MeshDeWarper.git
+cd MeshDeWarper
 python -m venv .venv && source .venv/bin/activate
 pip install -e ".[dev,test]"
 pre-commit install
@@ -60,5 +60,5 @@ pytest
 
 AGPL-3.0-only — see [LICENSE](LICENSE).
 
-[releases]: https://github.com/cura-xy-calibration/CuraXYCalibration/releases
-[docs]: https://cura-xy-calibration.readthedocs.io
+[releases]: https://github.com/Jofralso/MeshDeWarper/releases
+[repo]: https://github.com/Jofralso/MeshDeWarper

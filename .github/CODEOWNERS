@@ -1,23 +1,23 @@
 # Repository code owners
 # Each line is a file pattern followed by usernames or team names.
 
-* @cura-xy-calibration/maintainers
+* @mesh-de-warper/maintainers
 
 # Core data types and interpolation (critical path)
-/src/cura_xy_calibration/core/ @cura-xy-calibration/core-team
-/src/cura_xy_calibration/interpolation/ @cura-xy-calibration/core-team
+/src/mesh_de_warper/core/ @mesh-de-warper/core-team
+/src/mesh_de_warper/interpolation/ @mesh-de-warper/core-team
 
 # G-code engine (critical path)
-/src/cura_xy_calibration/gcode/ @cura-xy-calibration/gcode-team
+/src/mesh_de_warper/gcode/ @mesh-de-warper/gcode-team
 
 # Vision module (experimental)
-/src/cura_xy_calibration/vision/ @cura-xy-calibration/vision-team
+/src/mesh_de_warper/vision/ @mesh-de-warper/vision-team
 
 # UI components
-/src/cura_xy_calibration/ui/ @cura-xy-calibration/ui-team
+/src/mesh_de_warper/ui/ @mesh-de-warper/ui-team
 
 # CI/CD pipeline
-/.github/workflows/ @cura-xy-calibration/devops-team
+/.github/workflows/ @mesh-de-warper/devops-team
 
 # Documentation
-/docs/ @cura-xy-calibration/docs-team
+/docs/ @mesh-de-warper/docs-team

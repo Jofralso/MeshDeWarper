@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from cura_xy_calibration.core.point import Point
+from mesh_de_warper.core.point import Point
 
 
 class TestPoint:

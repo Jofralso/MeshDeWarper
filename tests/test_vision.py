@@ -6,9 +6,9 @@ from pathlib import Path
 
 import pytest
 
-from cura_xy_calibration.vision.calibration import VisionCalibrationAssistant
-from cura_xy_calibration.vision.correction import LensCorrector, PerspectiveCorrector
-from cura_xy_calibration.vision.detection import DetectionResult, PointDetector
+from mesh_de_warper.vision.calibration import VisionCalibrationAssistant
+from mesh_de_warper.vision.correction import LensCorrector, PerspectiveCorrector
+from mesh_de_warper.vision.detection import DetectionResult, PointDetector
 
 
 class TestDetectionResult:
@@ -24,7 +24,7 @@ class TestDetectionResult:
             confidence=[0.9, 0.8],
             grid_cols=2,
             grid_rows=1,
-            image_path="/tmp/test.png",
+            image_path="/tmp/test.png",  # noqa: S108
         )
         assert len(result.detected_points) == 2
         assert result.confidence[0] == 0.9

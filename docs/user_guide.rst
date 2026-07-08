@@ -4,7 +4,7 @@ User Guide
 Overview
 --------
 
-CuraXYCalibration allows you to characterise and compensate for non-linear
+MeshDeWarper allows you to characterise and compensate for non-linear
 positioning errors across the entire printable area of your 3D printer.
 
 Workflow

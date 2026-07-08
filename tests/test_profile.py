@@ -5,7 +5,7 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
-from cura_xy_calibration.core.profile import CalibrationProfile
+from mesh_de_warper.core.profile import CalibrationProfile
 
 
 class TestCalibrationProfile:
@@ -74,7 +74,7 @@ class TestCalibrationProfile:
 
     def test_serialise_deserialise_preserves_version(
         self, sample_profile: CalibrationProfile
-    ) -> None:  # noqa: E501
+    ) -> None:
         d = sample_profile.to_dict()
         restored = CalibrationProfile.from_dict(d)
         assert restored.version == sample_profile.version

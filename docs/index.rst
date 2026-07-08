@@ -1,4 +1,4 @@
-Welcome to CuraXYCalibration's documentation!
+Welcome to MeshDeWarper's documentation!
 ===============================================
 
 Full XY distortion calibration plugin for Ultimaker Cura.

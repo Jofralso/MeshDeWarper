@@ -28,4 +28,4 @@ Examples of unacceptable behaviour:
 
 Project maintainers are responsible for clarifying and enforcing our standards.
 Instances of abusive behaviour may be reported to the project team at
-conduct@cura-xy-calibration.dev.
+conduct@mesh-de-warper.dev.

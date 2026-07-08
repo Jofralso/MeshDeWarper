@@ -4,27 +4,27 @@ API Reference
 Core
 ----
 
-.. automodule:: cura_xy_calibration.core
+.. automodule:: mesh_de_warper.core
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: cura_xy_calibration.core.point
+.. automodule:: mesh_de_warper.core.point
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: cura_xy_calibration.core.mesh
+.. automodule:: mesh_de_warper.core.mesh
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: cura_xy_calibration.core.calibration
+.. automodule:: mesh_de_warper.core.calibration
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: cura_xy_calibration.core.profile
+.. automodule:: mesh_de_warper.core.profile
    :members:
    :undoc-members:
    :show-inheritance:
@@ -32,32 +32,32 @@ Core
 Interpolation
 -------------
 
-.. automodule:: cura_xy_calibration.interpolation
+.. automodule:: mesh_de_warper.interpolation
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: cura_xy_calibration.interpolation.base
+.. automodule:: mesh_de_warper.interpolation.base
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: cura_xy_calibration.interpolation.bilinear
+.. automodule:: mesh_de_warper.interpolation.bilinear
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: cura_xy_calibration.interpolation.bicubic
+.. automodule:: mesh_de_warper.interpolation.bicubic
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: cura_xy_calibration.interpolation.tps
+.. automodule:: mesh_de_warper.interpolation.tps
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: cura_xy_calibration.interpolation.rbf
+.. automodule:: mesh_de_warper.interpolation.rbf
    :members:
    :undoc-members:
    :show-inheritance:
@@ -65,27 +65,27 @@ Interpolation
 G-Code
 ------
 
-.. automodule:: cura_xy_calibration.gcode
+.. automodule:: mesh_de_warper.gcode
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: cura_xy_calibration.gcode.ast
+.. automodule:: mesh_de_warper.gcode.ast
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: cura_xy_calibration.gcode.parser
+.. automodule:: mesh_de_warper.gcode.parser
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: cura_xy_calibration.gcode.warper
+.. automodule:: mesh_de_warper.gcode.warper
    :members:
    :undoc-members:
    :show-inheritance:
 
-.. automodule:: cura_xy_calibration.gcode.emitter
+.. automodule:: mesh_de_warper.gcode.emitter
    :members:
    :undoc-members:
    :show-inheritance:
@@ -93,7 +93,7 @@ G-Code
 Patterns
 --------
 
-.. automodule:: cura_xy_calibration.patterns
+.. automodule:: mesh_de_warper.patterns
    :members:
    :undoc-members:
    :show-inheritance:
@@ -101,7 +101,7 @@ Patterns
 Vision
 ------
 
-.. automodule:: cura_xy_calibration.vision
+.. automodule:: mesh_de_warper.vision
    :members:
    :undoc-members:
    :show-inheritance:
@@ -109,7 +109,7 @@ Vision
 Plugin
 ------
 
-.. automodule:: cura_xy_calibration.plugin
+.. automodule:: mesh_de_warper.plugin
    :members:
    :undoc-members:
    :show-inheritance:

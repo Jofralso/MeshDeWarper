@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from cura_xy_calibration.gcode.parser import GCodeParser
+from pathlib import Path
+
+from mesh_de_warper.gcode.parser import GCodeParser
 
 
 class TestGCodeParser:
@@ -70,6 +72,15 @@ class TestGCodeParser:
         ast = parser.parse(text)
         cmd = ast.all_commands()[0]
         assert cmd.raw == text
+
+    def test_parse_from_path(self, temp_dir: Path) -> None:
+        file_path = temp_dir / "test.gcode"
+        file_path.write_text("G1 X10 Y20")
+        parser = GCodeParser()
+        ast = parser.parse(file_path)
+        cmd = ast.all_commands()[0]
+        assert cmd.g_code == 1
+        assert cmd.position.x == 10.0
 
     def test_parse_stream(self) -> None:
         parser = GCodeParser()

@@ -3,18 +3,18 @@ requires = ["setuptools>=69.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "CuraXYCalibration"
-version = "0.1.0"
+name = "MeshDeWarper"
+version = "0.2.0"
 description = "Full XY distortion calibration plugin for Ultimaker Cura"
 readme = "README.md"
 requires-python = ">=3.12"
-license = "AGPL-3.0-only"
+license = {text = "AGPL-3.0-only"}
 authors = [
-    {name = "CuraXYCalibration Contributors"},
+    {name = "MeshDeWarper Contributors"},
 ]
 keywords = ["cura", "3d-printing", "calibration", "distortion-correction", "g-code"]
 classifiers = [
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Manufacturing",
     "Programming Language :: Python :: 3.12",
     "Topic :: Scientific/Engineering",
@@ -27,10 +27,6 @@ dependencies = [
     "numpy-stl>=3.0",
     "reportlab>=4.1",
     "svgwrite>=1.4",
-    "PyYAML>=6.0",
-    "Pillow>=10.0",
-    "opencv-python-headless>=4.9",
-    "networkx>=3.3",
     "matplotlib>=3.8",
 ]
 
@@ -38,6 +34,7 @@ dependencies = [
 dev = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
+    "pytest-qt>=4.0",
     "ruff>=0.5.0",
     "black>=24.4",
     "mypy>=1.10",
@@ -48,13 +45,12 @@ dev = [
     "sphinx>=7.3",
     "sphinx-rtd-theme>=2.0",
     "sphinx-autodoc-typehints>=2.0",
-    "types-PyYAML>=6.0",
     "types-setuptools>=69.0",
 ]
 test = [
     "pytest>=8.0",
     "pytest-cov>=5.0",
-    "pytest-asyncio>=0.23",
+    "pytest-qt>=4.0",
 ]
 qt = [
     "PyQt5>=5.15",
@@ -69,18 +65,21 @@ vision = [
     "scikit-image>=0.23",
 ]
 all = [
-    "CuraXYCalibration[dev,test,qt,docs,vision]",
+    "MeshDeWarper[dev,test,qt,docs,vision]",
 ]
 
 [project.urls]
-Homepage = "https://github.com/cura-xy-calibration/CuraXYCalibration"
-Repository = "https://github.com/cura-xy-calibration/CuraXYCalibration"
-Documentation = "https://cura-xy-calibration.readthedocs.io"
-Issues = "https://github.com/cura-xy-calibration/CuraXYCalibration/issues"
+Homepage = "https://github.com/Jofralso/MeshDeWarper"
+Repository = "https://github.com/Jofralso/MeshDeWarper"
+Documentation = "https://github.com/Jofralso/MeshDeWarper#readme"
+Issues = "https://github.com/Jofralso/MeshDeWarper/issues"
+
+[project.scripts]
+meshdewarper = "mesh_de_warper.plugin:register"
 
 [tool.setuptools.packages.find]
 where = ["src"]
-include = ["cura_xy_calibration*"]
+include = ["mesh_de_warper*"]
 
 [tool.ruff]
 target-version = "py312"
@@ -107,6 +106,19 @@ ignore = [
     "D401",  # imperative mood
     "ANN101", # self type annotation
     "ANN102", # cls type annotation
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = [
+    "S101",   # assert allowed in tests
+    "D101",   # no docstring required on test class
+    "D102",   # no docstring required on test method
+    "D103",   # no docstring required on test function
+    "ANN001", # no type annotation required in tests
+    "ANN201", # no return type annotation in tests
+    "ANN202", # no return type annotation in tests
+    "ANN204", # no return type annotation in tests
+    "BLE001", # blind except allowed in tests
 ]
 
 [tool.ruff.lint.pydocstyle]
@@ -153,7 +165,7 @@ markers = [
 ]
 
 [tool.coverage.run]
-source = ["cura_xy_calibration"]
+source = ["mesh_de_warper"]
 branch = true
 
 [tool.coverage.report]

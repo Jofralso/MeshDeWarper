@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from cura_xy_calibration.core.mesh import Mesh
-from cura_xy_calibration.core.point import Point
+from mesh_de_warper.core.mesh import Mesh
+from mesh_de_warper.core.point import Point
 
 
 class TestMesh:
