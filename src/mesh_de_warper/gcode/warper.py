@@ -170,8 +170,8 @@ class GCodeWarper:
                 start_y,
                 end_x,
                 end_y,
-                arc.r,
-                is_cw,  # type: ignore[arg-type]
+                arc.r if arc.r is not None else 0.0,
+                is_cw,
             )
             cx, cy = center
         else:

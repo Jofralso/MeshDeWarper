@@ -124,7 +124,9 @@ class CalibrationEditor(QWidget):
 
         self._table = QTableWidget()
         self._table.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
-        self._table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        header = self._table.horizontalHeader()
+        assert header is not None  # noqa: S101
+        header.setSectionResizeMode(QHeaderView.Stretch)
         self._table.setSelectionBehavior(QTableWidget.SelectItems)
         table_layout.addWidget(self._table)
 
@@ -204,10 +206,10 @@ class CalibrationEditor(QWidget):
             self._table.setItem(idx, 0, QTableWidgetItem(str(row)))
             self._table.setItem(idx, 1, QTableWidgetItem(str(col)))
             item_x = QTableWidgetItem(f"{point.offset_x:.{DECIMAL}f}")
-            item_x.setData(Qt.UserRole, point.offset_x)
+            item_x.setData(Qt.UserRole, point.offset_x)  # type: ignore[attr-defined]
             self._table.setItem(idx, 2, item_x)
             item_y = QTableWidgetItem(f"{point.offset_y:.{DECIMAL}f}")
-            item_y.setData(Qt.UserRole, point.offset_y)
+            item_y.setData(Qt.UserRole, point.offset_y)  # type: ignore[attr-defined]
             self._table.setItem(idx, 3, item_y)
 
     def _apply_table_changes(self) -> None:
@@ -217,8 +219,11 @@ class CalibrationEditor(QWidget):
         errors = 0
         for idx, (row, col, point) in enumerate(mesh.iter_with_index()):
             try:
-                ox = float(self._table.item(idx, 2).text())
-                oy = float(self._table.item(idx, 3).text())
+                item_x = self._table.item(idx, 2)
+                item_y = self._table.item(idx, 3)
+                assert item_x is not None and item_y is not None  # noqa: S101
+                ox = float(item_x.text())
+                oy = float(item_y.text())
                 mesh[row, col] = Point(x=point.x, y=point.y, offset_x=ox, offset_y=oy)
             except (ValueError, AttributeError):
                 errors += 1

@@ -65,7 +65,7 @@ class ProfileManager(QDialog):
         # Metadata display
         self._info = QLabel("No profile selected.")
         self._info.setWordWrap(True)
-        self._info.setAlignment(Qt.AlignTop)
+        self._info.setAlignment(Qt.AlignTop)  # type: ignore[attr-defined]
         self._info.setFrameStyle(QLabel.Panel | QLabel.Sunken)
         layout.addWidget(self._info)
 
@@ -75,7 +75,9 @@ class ProfileManager(QDialog):
         )
         self._button_box.accepted.connect(self.accept)
         self._button_box.rejected.connect(self.reject)
-        self._button_box.button(QDialogButtonBox.Open).setEnabled(False)
+        open_btn = self._button_box.button(QDialogButtonBox.Open)
+        assert open_btn is not None  # noqa: S101
+        open_btn.setEnabled(False)
         layout.addWidget(self._button_box)
 
     def _load_from_file(self) -> None:
@@ -92,7 +94,7 @@ class ProfileManager(QDialog):
             return
 
         item = QListWidgetItem(f"{path.stem}  —  {profile.printer or 'unknown printer'}")
-        item.setData(Qt.UserRole, str(path))
+        item.setData(Qt.UserRole, str(path))  # type: ignore[attr-defined]
         self._list.addItem(item)
         self._list.setCurrentItem(item)
 
@@ -100,13 +102,15 @@ class ProfileManager(QDialog):
         item = self._list.currentItem()
         if item is None:
             self._delete_btn.setEnabled(False)
-            self._button_box.button(QDialogButtonBox.Open).setEnabled(False)
+            open_btn = self._button_box.button(QDialogButtonBox.Open)
+            assert open_btn is not None  # noqa: S101
+            open_btn.setEnabled(False)
             self._info.setText("No profile selected.")
             self._selected_profile = None
             self._selected_path = None
             return
 
-        path_str = item.data(Qt.UserRole)
+        path_str = item.data(Qt.UserRole)  # type: ignore[attr-defined]
         if not path_str:
             return
         path = Path(path_str)
@@ -115,7 +119,9 @@ class ProfileManager(QDialog):
             self._selected_profile = profile
             self._selected_path = path
             self._delete_btn.setEnabled(True)
-            self._button_box.button(QDialogButtonBox.Open).setEnabled(True)
+            open_btn = self._button_box.button(QDialogButtonBox.Open)
+            assert open_btn is not None  # noqa: S101
+            open_btn.setEnabled(True)
             lines = [
                 f"<b>Printer:</b> {profile.printer or 'N/A'}",
                 f"<b>Bed:</b> {profile.bed_width} x {profile.bed_height} mm",
@@ -129,7 +135,9 @@ class ProfileManager(QDialog):
         except (OSError, ValueError):
             self._info.setText(f"<i>Could not load profile from {path}</i>")
             self._delete_btn.setEnabled(True)
-            self._button_box.button(QDialogButtonBox.Open).setEnabled(True)
+            open_btn = self._button_box.button(QDialogButtonBox.Open)
+            assert open_btn is not None  # noqa: S101
+            open_btn.setEnabled(True)
 
     def _delete_selected(self) -> None:
         item = self._list.currentItem()
